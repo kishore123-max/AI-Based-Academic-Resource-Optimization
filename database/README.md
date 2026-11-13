@@ -1,5 +1,5 @@
 # Database
 
-`schema.sql` defines the PostgreSQL tables for campuses, resource inventory, learning materials, incoming requests, and allocation results. Learning-material categories are constrained to the seven resource types used by the dashboard. The current API prototype is stateless and does not yet read from or write to PostgreSQL; persistence is intentionally a follow-up integration step.
+`schema.sql` uses MySQL syntax and defines additional resource-inventory, request, and allocation tables. The FastAPI backend connects to PostgreSQL through `DATABASE_URL` and creates its student, faculty, department, learning-material, and assignment tables at startup. The optimizer still works in memory and does not persist optimization results.
 
-For local development, `docker compose up -d database` applies this schema on the first database startup. The development password in the compose file must be replaced before any shared or production deployment.
+For local development, `docker compose up -d database` starts the MySQL service and applies `schema.sql`. Do not reuse the development credentials in a shared or production environment.

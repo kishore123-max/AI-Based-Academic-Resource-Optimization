@@ -1,10 +1,14 @@
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 import os
 from typing import Any
+from urllib.parse import urlsplit
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import (
+    get_db_engine,
     get_assignments,
     get_departments,
     get_faculty,
@@ -20,10 +24,18 @@ from app.database import (
 from app.optimizer import optimize_resources
 from app.schemas import OptimizationInput, OptimizationResponse
 
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
+    init_db()
+    yield
+
+
 app = FastAPI(
     title="CampusFlow API",
     description="Academic resource planning and allocation recommendations.",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 origins = os.getenv(
@@ -37,11 +49,6 @@ app.add_middleware(
 )
 
 
-@app.on_event("startup")
-def startup() -> None:
-    init_db()
-
-
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "service": "campusflow-api"}
@@ -49,11 +56,23 @@ def health() -> dict[str, str]:
 
 @app.get("/api/db-status")
 def db_status() -> dict[str, Any]:
+    engine = get_db_engine()
+    database_url = os.getenv("DATABASE_URL")
+    if engine == "postgresql" and database_url:
+        parsed_url = urlsplit(database_url)
+        host = parsed_url.hostname or "configured"
+        database = parsed_url.path.lstrip("/") or "configured"
+    elif engine == "mysql":
+        host = os.getenv("DB_HOST", "localhost")
+        database = os.getenv("DB_NAME", "campusflow")
+    else:
+        host = "local"
+        database = "sqlite"
     return {
-        "engine": os.getenv("DB_ENGINE", "mysql").lower(),
-        "host": os.getenv("DB_HOST", "localhost"),
-        "database": os.getenv("DB_NAME", "campusflow"),
-        "mode": "sqlite-fallback" if os.getenv("DB_ENGINE", "mysql").lower() != "sqlite" else "sqlite",
+        "engine": engine,
+        "host": host,
+        "database": database,
+        "mode": engine,
     }
 
 
