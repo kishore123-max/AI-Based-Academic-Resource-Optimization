@@ -44,10 +44,9 @@ origins = os.getenv(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[origin.strip() for origin in origins if origin.strip()],
-    # Local dev: accept the Vite dev/preview server on any localhost port, so the
+# Local dev: accept the Vite dev/preview server on any localhost port, so the
     # app keeps working even if 5173 is busy and Vite picks another one.
-    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
-    allow_methods=["GET", "POST"],
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
 

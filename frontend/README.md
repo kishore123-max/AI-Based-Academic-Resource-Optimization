@@ -6,5 +6,4 @@ React 19 + TypeScript + Vite. See the [root README](../README.md) for setup, dem
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # type-check + production build into dist/
-npm run lint
-```
+npm run lint```

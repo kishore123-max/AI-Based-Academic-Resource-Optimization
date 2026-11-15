@@ -6,8 +6,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-campusflow_root_dev}
       MYSQL_DATABASE: campusflow
       MYSQL_USER: campusflow
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-campusflow_dev}
-    ports:
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-campusflow_dev}    ports:
       - "3306:3306"
     volumes:
       - campusflow-data:/var/lib/mysql

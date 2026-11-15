@@ -9,8 +9,7 @@ campusflow.db
 .env
 .env.*
 !.env.example
-.DS_Store
-apk/.expo/
+.DS_Storeapk/.expo/
 apk/android/
 apk/ios/
 apk/*.jks
